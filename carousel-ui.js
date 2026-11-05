@@ -1,0 +1,17 @@
+(function(){
+const $=id=>document.getElementById(id);let post=null,save=null,logo=null;
+function state(){return post?.carousel;}
+function select(next,onSave){post=next;save=onSave;$('image-fields').replaceChildren();if(!post)return;
+ const data=state();$('image-design').value=data?.design||'cream';$('image-stale').textContent=data&&data.source!==post.texts.instagram?'元のInstagram文章が変更されています。画像にはまだ反映されていません。必要なら「文章から画像を作る」で更新してください。':'';
+ if(!data){$('image-status').textContent='「文章から画像を作る」を押すと、現在のInstagram文章から3枚を作成します。';return;}
+ data.slides.forEach((slide,i)=>{const card=document.createElement('section');card.className='image-card';const label=document.createElement('h3');label.textContent=`${i+1}枚目：${['表紙','解説','まとめ'][i]}`;const title=document.createElement('textarea');title.value=slide.title;title.rows=2;title.setAttribute('aria-label',`${i+1}枚目の見出し`);const body=document.createElement('textarea');body.value=slide.body;body.rows=6;body.setAttribute('aria-label',`${i+1}枚目の本文`);const canvas=document.createElement('canvas');canvas.setAttribute('aria-label',`${i+1}枚目の画像プレビュー`);const error=document.createElement('p');error.className='hint image-error';error.setAttribute('role','status');const download=document.createElement('button');download.type='button';download.textContent=`${i+1}枚目をPNGで保存`;
+ function paint(){const result=MonomikkeCarousel.render(canvas,slide,i,data.design,logo);error.textContent=result.ok?'':result.error;download.disabled=!result.ok;}
+ title.oninput=()=>{slide.title=title.value;save();paint();};body.oninput=()=>{slide.body=body.value;save();paint();};
+ download.onclick=async()=>{await document.fonts.ready;paint();if(download.disabled)return;canvas.toBlob(blob=>{if(!blob){$('image-status').textContent='画像を保存できませんでした。もう一度お試しください。';return;}const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`monomikke-${post.id}-${i+1}.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);$('image-status').textContent='PNGをダウンロードしました。Chromeの「ダウンロード」またはFilesアプリで確認してください。';},'image/png');};card.append(label,title,body,canvas,error,download);$('image-fields').append(card);paint();});$('image-status').textContent='1080×1350px・3枚。編集した内容はこの投稿の履歴に保存されます。';
+}
+$('build-images').onclick=()=>{if(!post)return;save();if(state()&&!confirm('画像内の編集を現在のInstagram文章で置き換えますか？'))return;post.carousel={design:$('image-design').value,source:post.texts.instagram,slides:MonomikkeCarousel.fromPost(post.theme,post.texts.instagram)};save();select(post,save);};
+$('image-design').onchange=()=>{if(!state())return;state().design=$('image-design').value;save();select(post,save);};
+$('image-logo').onchange=async()=>{const file=$('image-logo').files[0];if(!file)return;if(!['image/png','image/jpeg'].includes(file.type)||file.size>2*1024*1024){$('image-status').textContent='ロゴは2MB以下のPNGまたはJPEGを選んでください。';return;}try{const next=await createImageBitmap(file);if(next.width>4096||next.height>4096){next.close();throw Error();}logo?.close();logo=next;select(post,save);$('image-status').textContent='ロゴを反映しました。ロゴ画像はこの画面内のみ保持し、外部送信しません。';}catch{$('image-status').textContent='画像を読み込めませんでした。小さなPNGまたはJPEGでお試しください。';}};
+$('clear-logo').onclick=()=>{logo?.close();logo=null;$('image-logo').value='';select(post,save);};
+window.MonomikkeCarouselUI={select,changed(){if(state())$('image-stale').textContent=state().source!==post.texts.instagram?'元のInstagram文章が変更されています。画像は自動で上書きしません。必要なら作り直してください。':'';}};
+})();

@@ -25,20 +25,22 @@ function localGenerate({category,theme,details='',style='explain',cta='save',pro
  const item=info.item;const supplied=clean(details);
  const fallback=category==='tips'?'対象のOS・機種を確認し、メーカーの公式ヘルプで利用条件と手順を確認しましょう。具体的な設定手順・注意点は追加確認が必要です。':'使いたい場面を整理し、販売元の商品情報で特徴・対応条件を確認しましょう。具体的な仕様・メリット・注意点は追加確認が必要です。';
  const n=variant===undefined?Math.floor(Math.random()*3):Math.abs(variant)%3;
- const hooks={empathy:['選ぶ前に迷うこと、ありますよね。','使う直前に慌てるのは避けたいですよね。','小さな使いにくさを、少しずつ見直したい。'],question:['使う前に、何を確認しておくと安心？','自分の使い方に合うか、どこから確かめる？','見直すなら、まず何から始める？'],surprise:['使い方だけでなく、注意点にも目を向けてみよう。','便利そう、の一歩先。利用条件も確認してみよう。','選ぶときは、機能以外の確認ポイントにも注目。']};
+ const subject=Array.from(clean(item?.title||theme)).slice(0,28).join('');
+ const hooks={empathy:[`「${subject}」、何から見直すか迷いますよね。`,`「${subject}」、使う前に整理しておきたい。`,`「${subject}」の確認を、後回しにしないために。`],question:[`「${subject}」、まず何を確認する？`,`「${subject}」で注意したい点は？`,`「${subject}」、自分の条件に合っている？`],surprise:[`「${subject}」は、注意点から見るのもひとつの方法。`,`「${subject}」、手順以外の条件にも注目。`,`「${subject}」は、確認リストで整理してみよう。`]};
  const hook=hooks[opening][n];
  const leads={explain:['まず押さえたいポイント','知っておくと迷いにくいこと','使う前に確認したいこと'],relatable:['使うときに迷わないために','小さな不便を見直すヒント','準備してから気づく前に'],product:['選ぶ前に見ておきたいこと','使う場面から考えるモノ選び','気になるアイテムをチェック'],compare:['自分に合うものを選ぶ基準','比較するときはここを見る','おすすめを決める前の確認リスト']};
  const facts=supplied?`📝 伝えたいポイント\n${supplied}`:item?item.facts.map((s,i)=>`${category==='tips'?`${i+1}.`:'✓'} ${s}`).join('\n'):fallback;
  const caution=!item?'このテーマに一致する内蔵データはありません。具体的な情報は追加確認が必要です。':supplied?'入力された内容の正確性・対象条件は追加確認が必要です。':item.caution;
  const action=cta==='profile'?'ほかの発見はプロフィールから。':cta==='link'?`商品情報はこちらで確認できます。\n${productUrl}`:['📌 必要なときに見返せるよう保存。','📌 試す前のチェック用に保存してね。','📌 次に選ぶときのメモとして保存。'][n];
  const headings={explain:category==='tips'?'🔎 設定・確認の流れ':'🔎 選び方のポイント',relatable:'💭 迷いやすいところを整理',product:'🛍 特徴・使う場面',compare:'⚖️ 比較するときのチェック項目'};
+ const structure=n===0?(item&&!supplied?`${category==='tips'?'設定・確認':'選ぶ前の確認'}${item.facts.length}項目`:'確認する内容を整理'):n===1?'失敗を避けるために先に確認':'使う前のチェックリスト';
  const benefit=item&&!supplied?`\n\n💡 ${item.benefit}`:'';
  const extra='';
  const comparison=style==='compare'?'\n\n特定の商品を一番とは決めず、使う場面と確認できた条件を並べて選びましょう。':'';
- let instagram=`${hook} ✨\n${leads[style][n]}\n「${clean(theme)}」\n\n${headings[style]}\n${facts}${benefit}${extra}${comparison}\n\n⚠️ 注意点\n${caution}\n\n${action}\n\n#モノみっけ ${categories[category].tags}`;
+ let instagram=`${hook} ✨\n${leads[style][n]}\n「${clean(theme)}」\n\n${structure}\n${headings[style]}\n${facts}${benefit}${extra}${comparison}\n\n⚠️ 注意点\n${caution}\n\n${action}\n\n#モノみっけ ${categories[category].tags}`;
  const topicHeader=`「${clean(theme)}」`;
- if(n===1)instagram=`${hook} ✨\n${topicHeader}\n\n⚠️ 先に確認\n${caution}\n\n${headings[style]}\n${facts}${benefit}${comparison}\n\n${action}\n\n#モノみっけ ${categories[category].tags}`;
- if(n===2)instagram=`${hook} ✨\n${topicHeader}${benefit}\n\n${headings[style]}\n${facts}${comparison}\n\n⚠️ 注意点\n${caution}\n\n${action}\n\n#モノみっけ ${categories[category].tags}`;
+ if(n===1)instagram=`${hook} ✨\n${topicHeader}\n\n⚠️ 先に確認\n${caution}\n\n${structure}\n${headings[style]}\n${facts}${benefit}${comparison}\n\n${action}\n\n#モノみっけ ${categories[category].tags}`;
+ if(n===2)instagram=`${hook} ✨\n${topicHeader}${benefit}\n\n${structure}\n${headings[style]}\n${facts}${comparison}\n\n⚠️ 注意点\n${caution}\n\n${action}\n\n#モノみっけ ${categories[category].tags}`;
  // Use one complete fact rather than cutting instructions halfway through.
  const summary=supplied||(item?item.facts[n%item.facts.length]:fallback);
  const threadAction=cta==='link'?`商品情報：${productUrl}`:cta==='profile'?'ほかの発見はプロフィールへ。':'あとで見返せるよう保存。';

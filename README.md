@@ -15,7 +15,7 @@
 
 GitHub Pagesで無料のHTTPSサイトとして利用できます。PC・APIキー・パッケージインストールは不要です。
 
-**[Androidだけで公開する手順](docs/ANDROID-PUBLISH.md)** を上から順に進めてください。GitHub Pagesの設定は `Deploy from a branch` → `main` → `/ (root)` です。公開するファイルは `index.html`、`style.css`、`generator.js`、`knowledge.js`、`topics.js`、`app.js` と任意の `.nojekyll`。すべて同じ階層に置きます。相対パスのため `/monomikke/` のようなサブパスでも動作します。
+**[Androidだけで公開する手順](docs/ANDROID-PUBLISH.md)** を上から順に進めてください。GitHub Pagesの設定は `Deploy from a branch` → `main` → `/ (root)` です。公開するファイルは `index.html`、`style.css`、`generator.js`、`knowledge.js`、`topics.js`、`carousel.js`、`carousel-ui.js`、`app.js` と任意の `.nojekyll`。すべて同じ階層に置きます。相対パスのため `/monomikke/` のようなサブパスでも動作します。
 
 Pull Requestを使えば、スマホでマージしてPagesを有効にするだけで公開できます。ZIPのダウンロードやファイルの手動アップロードは不要です。実際の公開完了は、マージとPagesの設定後に確認してください。履歴は利用者のブラウザ内に保存され、旧URLから新URLには自動移行されません。
 
@@ -86,3 +86,17 @@ Node.js標準のテストランナーで全カテゴリーの生成、入力検�
 ### GitHub Pagesの更新
 
 AndroidのChromeでこの変更のPRを開き「Merge pull request」→「Confirm merge」。Pagesが既存どおり main / (root) を配信していれば追加設定は不要です。「Actions」で pages build and deployment の成功後に公開URLを再読み込みしてください。`topics.js` も同じ階層へ配信されます。履歴を残すため、Chromeのサイトデータは削除しないでください。更新前後で同じURL・ブラウザを使用します。
+
+## 第5弾：Instagram投稿画像メーカー
+
+投稿を生成・履歴から開く → 「Instagram投稿画像メーカー」を開く → デザインを選ぶ → 「文章から画像を作る」。表紙・解説・まとめの3枚を1080×1350pxで作り、各「PNGで保存」から1枚ずつダウンロードします。Android Chromeでは「︙ → ダウンロード」またはFilesアプリからPNGを確認できます。端末のInstagramで3枚を順に選んで投稿してください。自動投稿は行いません。
+
+- クリーム、くすみピンク、セージグリーンの3デザイン。全画像に「モノみっけ！」を表示。
+- Instagram文章を出典に表紙・解説・注意点等へ配分。生成時点の文章を保持し、事実を追加・要約しません。各画像の見出しと本文を自由に編集可能。投稿の文章そのものは変更しません。
+- 日本語を文字単位で計測し、禁則を考慮した改行と文字サイズ調整を行います。収まらなければエラーを表示してPNG保存を無効にします。黙って省略しません。
+- 画像編集とデザインは既存の投稿に追加データとして保存。旧履歴はそのまま利用可能。元の文章変更時は差分を通知し、画像の編集を自動上書きしません。「文章から画像を作る」で確認して作り直せます。
+- ロゴは任意の2MB以下・4096px以下のPNG/JPEGを選択。ブラウザ内のみで処理し、この画面を閉じる・再読み込みすると選び直しになります。画像自体は履歴に保存しないため、履歴容量を抑えます。
+- `carousel.js` は原文配分・改行・Canvas描画、`carousel-ui.js` は編集・PNG保存。ビルドも外部APIも不要。Pagesには両ファイルも同じ階層へ配信してください。
+- 書き出しにテーマの語句を使い、別パターンでは「実際の確認項目数」「先に注意点」「チェックリスト」の構成を切り替えます。データが2項目なら3選と表示しません。
+
+検証は `npm test`。Android実機での操作確認は、Pages更新後にPNGを保存して行ってください。開発時はChromiumのスマホ相当画面とPNG出力で検証しています。
