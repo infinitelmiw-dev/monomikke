@@ -15,7 +15,7 @@
 
 GitHub Pagesで無料のHTTPSサイトとして利用できます。PC・APIキー・パッケージインストールは不要です。
 
-**[Androidだけで公開する手順](docs/ANDROID-PUBLISH.md)** を上から順に進めてください。GitHub Pagesの設定は `Deploy from a branch` → `main` → `/ (root)` です。公開するファイルは `index.html`、`style.css`、`generator.js`、`knowledge.js`、`topics.js`、`purchase.js`、`product.js`、`library-data.js`、`library-ui.js`、`carousel.js`、`carousel-ui.js`、`app.js` と任意の `.nojekyll`。すべて同じ階層に置きます。相対パスのため `/monomikke/` のようなサブパスでも動作します。
+**[Androidだけで公開する手順](docs/ANDROID-PUBLISH.md)** を上から順に進めてください。GitHub Pagesの設定は `Deploy from a branch` → `main` → `/ (root)` です。公開するファイルは `index.html`、`style.css`、`generator.js`、`knowledge.js`、`topics.js`、`purchase.js`、`product.js`、`library-data.js`、`library-ui.js`、`carousel.js`、`image-loader.js`、`carousel-ui.js`、`app.js` と任意の `.nojekyll`。すべて同じ階層に置きます。相対パスのため `/monomikke/` のようなサブパスでも動作します。
 
 Pull Requestを使えば、スマホでマージしてPagesを有効にするだけで公開できます。ZIPのダウンロードやファイルの手動アップロードは不要です。実際の公開完了は、マージとPagesの設定後に確認してください。履歴は利用者のブラウザ内に保存され、旧URLから新URLには自動移行されません。
 
@@ -174,3 +174,25 @@ Bは画像の権利・入手元・利用条件を判定する機能ではあり�
 表示名は「【公式】」「【送料無料】」等の既知の販促表記と余分な空白のみ整理します。ブランド、型番、ワット数、色、端子など商品を識別する情報は勝手に省略しません。安全に短くできなければ正式名称を使います。例：`【公式】【送料無料】 Anker PowerPort III Nano 20W` → `Anker PowerPort III Nano 20W`。正式名称は商品登録・投稿履歴に保持し、表示名も履歴・JSONに保存します。
 
 Ankerのテストは商品名だけの入力で性能・価格・体験談を補わないケースと、明示的なテスト用入力のメリットを優先するケースを検証します。実商品の仕様やレビューを外部から取得・確認する機能はありません。
+
+## Androidで画像が開けない場合の修正
+
+写真は拡張子・MIMEだけでなくファイル先頭のJPEG/PNG/WebP署名で判定します。空のMIMEや`application/octet-stream`、実形式と異なるMIMEでも、実データが対応形式なら読み込みます。`createImageBitmap`が失敗・未提供・タイムアウトの場合は、ローカルBlob URLの画像要素で読み込みます。縮小はCanvasで行い、2度目の`createImageBitmap`のリサイズ対応に依存しません。外部通信や写真の永続保存は行いません。
+
+読み込み後はサムネイルとファイル名を表示し、今回の最初の成功写真を1枚目へ割り当てます。まだ画像を作成していなければ3枚を自動作成します。サムネイルを押して1枚目の写真を選び直せます。複数選択の一部だけ失敗しても、成功した写真は保持します。既存写真をすべて削除してから選び直すこともできます。
+
+空ファイル、15MB超、非対応形式、ファイルアクセス失敗、破損・未対応の画像データ、タイムアウト、4000万画素超、描画時のメモリ不足等を日本語で案内します。デコード失敗だけでは端末側の原因を断定できないため、保存し直し・実際の画像変換・小さい画像での再試行を案内します。拡張子の変更だけでは変換されません。Bの画像は引き続き全体表示・編集禁止で、文字と装飾は画像外です。
+
+文字量が多く画像を書き出せない場合も写真は表示し、文字量の警告とPNG保存無効で修正を促します。従来の「文字エラーで写真も非表示」にはしません。ロゴも同じ代替読み込みを使います。
+
+### 実画像を使うブラウザテスト
+
+通常の `npm test` に加え、PlaywrightとChromiumを備えた開発環境で実行：
+
+```sh
+npm run test:images
+```
+
+`CHROMIUM_PATH` でChromiumを指定可能です。アプリ自体にはPlaywrightも追加パッケージも不要です。テストはローカル専用サーバーを自動起動・終了し、実際のJPEG/PNG/WebPデータを生成して読み込みます。Bitmap成功/失敗/未提供/停止、画像要素の代替処理、MIME欠落、破損、サムネイル、1枚目再割り当て、文字量超過時の写真表示、PNG出力を確認します。実際に失敗した楽天Ankerファイルは未提供のため、同一ファイル・Android実機での再現確認は別途必要です。
+
+新規 `image-loader.js` も他のJSと同じ階層へ配信します。Pages設定は従来のmain / (root)のままです。
