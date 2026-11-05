@@ -17,7 +17,7 @@ PC・APIキー・有料契約は不要です。AndroidのChrome、GitHubアカ�
 
 ## 1. 手動アップロード用のファイル準備（通常は不要）
 
-Pull Requestを使う場合は、この手順をスキップします。手動でアップロードする場合のみ、`index.html`、`style.css`、`generator.js`、`knowledge.js`、`topics.js`、`product.js`、`library-data.js`、`library-ui.js`、`carousel.js`、`carousel-ui.js`、`app.js` を用意してください。11ファイルは同じ階層に置きます。`.nojekyll` はビルドをせず静的ファイルを配信するための空ファイルです。この構成では、表示されなければ11ファイルだけでも動きます。
+Pull Requestを使う場合は、この手順をスキップします。手動でアップロードする場合のみ、`index.html`、`style.css`、`generator.js`、`knowledge.js`、`topics.js`、`purchase.js`、`product.js`、`library-data.js`、`library-ui.js`、`carousel.js`、`carousel-ui.js`、`app.js` を用意してください。12ファイルは同じ階層に置きます。`.nojekyll` はビルドをせず静的ファイルを配信するための空ファイルです。この構成では、表示されなければ12ファイルだけでも動きます。
 
 ## 2. GitHubにログインする
 
@@ -47,13 +47,13 @@ Pull Requestを使う場合は、この手順をスキップします。手動�
 1. リポジトリの「Code」画面を開き、ブランチを `main` にします。
 2. ファイル一覧の上にある「Add file」→「Upload files」をタップします。新規の空リポジトリでは「uploading an existing file」からも進めます。
 3. 「choose your files」をタップします。Androidのファイル選択画面で、ファイルを保存したフォルダーを開きます。
-4. `index.html`、`style.css`、`generator.js`、`knowledge.js`、`topics.js`、`product.js`、`library-data.js`、`library-ui.js`、`carousel.js`、`carousel-ui.js`、`app.js` を選択します。複数選べなければ、アップロード・保存を繰り返して1つずつ追加できます。`.nojekyll` が見える場合は一緒に追加します。
-5. 保存先がリポジトリの一番上であることを確認します。11ファイルを別のフォルダーに入れないでください。
+4. `index.html`、`style.css`、`generator.js`、`knowledge.js`、`topics.js`、`purchase.js`、`product.js`、`library-data.js`、`library-ui.js`、`carousel.js`、`carousel-ui.js`、`app.js` を選択します。複数選べなければ、アップロード・保存を繰り返して1つずつ追加できます。`.nojekyll` が見える場合は一緒に追加します。
+5. 保存先がリポジトリの一番上であることを確認します。12ファイルを別のフォルダーに入れないでください。
 6. 「Commit changes」の説明に `Publish Monomikke prototype` と入力します。
 7. `Commit directly to the main branch` を選び、「Commit changes」をタップします。ブランチ保護で直接保存できない場合は、新しいブランチとPull requestを作り、管理者がマージする必要があります。
-8. 「Code」画面で、READMEと同じ階層に11ファイルが並んでいることを確認します。既存の同名ファイルを更新するときは、新しい内容に置き換わります。
+8. 「Code」画面で、READMEと同じ階層に12ファイルが並んでいることを確認します。既存の同名ファイルを更新するときは、新しい内容に置き換わります。
 
-既にこの11ファイルがGitHubのmainに保存されている場合は、再アップロードせず次へ進めます。
+既にこの12ファイルがGitHubのmainに保存されている場合は、再アップロードせず次へ進めます。
 
 ## 5. GitHub Pagesを有効にする
 
@@ -103,7 +103,7 @@ Chromeで公開URLを開いた状態で「︙」→「ホーム画面に追加�
 | Pages設定が見つからない | ChromeのPC版サイトを使用し、管理権限とリポジトリの公開状態を確認 |
 | 404になる | Pagesのmain / (root)、index.htmlの位置、Actionsの成功を確認。初回は数分待つ |
 | READMEだけ表示される | index.htmlがmainの一番上に保存されているか確認 |
-| 色がなく、生成ボタンも動かない | CSSと9つのJSをindex.htmlと同じ階層へアップロード。ファイル名の大文字・小文字も一致させる |
+| 色がなく、生成ボタンも動かない | CSSと10個のJSをindex.htmlと同じ階層へアップロード。ファイル名の大文字・小文字も一致させる |
 | 更新が反映されない | Actions完了後にページを再読み込み。履歴が消えるので、サイトデータの削除は安易に行わない |
 | コピーできない | HTTPSで開く。文章欄を長押しし「すべて選択」→「コピー」でも利用可能 |
 | 履歴が保存できない | 通常タブを使用し、Chromeの保存設定・端末の空き容量を確認 |
