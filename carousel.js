@@ -20,13 +20,13 @@ function wrap(ctx,text,width){
 function fit(ctx,text,width,height,max,min){for(let size=max;size>=min;size--){ctx.font=`600 ${size}px sans-serif`;const lines=wrap(ctx,text,width);if(lines.every(x=>ctx.measureText(x).width<=width+.1)&&lines.length*size*1.55<=height)return {size,lines};}return null;}
 function render(canvas,slide,index,design='cream',logo=null,options={}){
  const t={...(themes[design]||themes.cream)};if(/^#[0-9a-f]{6}$/i.test(options.bg||'')){t.bg=options.bg;t.paper=options.bg;}if(/^#[0-9a-f]{6}$/i.test(options.ink||''))t.ink=options.ink;canvas.width=1080;canvas.height=1350;const ctx=canvas.getContext('2d');ctx.fillStyle=t.bg;ctx.fillRect(0,0,1080,1350);ctx.fillStyle=t.paper;ctx.fillRect(48,48,984,1254);
- ctx.fillStyle=t.accent;if(design==='pink'){ctx.beginPath();ctx.arc(950,80,145,0,Math.PI*2);ctx.fill();}else if(design==='sage'){ctx.fillRect(48,48,22,1254);}else{ctx.fillRect(90,210,100,7);}
+ ctx.fillStyle=t.accent;if(design==='pink'){ctx.beginPath();ctx.arc(990,65,34,0,Math.PI*2);ctx.fill();}else if(design==='sage'){ctx.fillRect(48,48,22,1254);}else{ctx.fillRect(90,185,100,7);}
  ctx.font='600 28px sans-serif';ctx.fillText(['COVER','GUIDE','CHECK & SAVE'][index],96,155);
- const photo=options.photo;const font=Math.max(24,Math.min(60,Number(options.font)||46));
- const title=fit(ctx,slide.title,888,photo?180:250,photo?52:index===0?76:60,28);const body=fit(ctx,slide.body,888,photo?300:570,font,24);
+ const photo=options.photo;if(photo&&options.provided){ctx.fillStyle=t.ink;ctx.font='600 23px sans-serif';ctx.fillText('楽天市場の商品',96,405);}const font=Math.max(24,Math.min(60,Number(options.font)||46));
+ const title=fit(ctx,slide.title,888,photo&&options.provided?150:photo?180:250,photo?52:index===0?76:60,28);const body=fit(ctx,slide.body,888,photo?300:570,font,24);
  if(!title||!body)return {ok:false,error:`${index+1}枚目の文字量が多すぎます。文章を短くするか改行を減らしてください。内容は省略していません。`};
  function draw(layout,y,color){ctx.fillStyle=color;ctx.font=`600 ${layout.size}px sans-serif`;for(const line of layout.lines){ctx.fillText(line,96,y);y+=layout.size*1.55;}}
- draw(title,photo?240:300,t.ink);if(photo){const box={x:96,y:430,w:888,h:400};ctx.save();ctx.beginPath();ctx.rect(box.x,box.y,box.w,box.h);ctx.clip();const rect=Product.crop(photo,box,options.provided?1:options.zoom,options.provided?0:options.x,options.provided?0:options.y,options.provided?'contain':options.mode);ctx.drawImage(photo,rect.x,rect.y,rect.w,rect.h);ctx.restore();}draw(body,photo?900:590,t.ink);ctx.fillStyle=t.accent;ctx.fillRect(96,1200,888,2);ctx.font='600 30px sans-serif';ctx.fillText('モノみっけ！',logo?180:96,1260);ctx.font='24px sans-serif';ctx.fillText(`${index+1} / 3`,910,1260);
+ draw(title,photo?240:300,t.ink);if(photo){const box={x:96,y:430,w:888,h:400};ctx.save();ctx.beginPath();ctx.rect(box.x,box.y,box.w,box.h);ctx.clip();const rect=Product.crop(photo,box,options.provided?1:options.zoom,options.provided?0:options.x,options.provided?0:options.y,options.provided?'contain':options.mode);ctx.filter='none';ctx.drawImage(photo,rect.x,rect.y,rect.w,rect.h);ctx.restore();}draw(body,photo?900:590,t.ink);ctx.fillStyle=t.accent;ctx.fillRect(96,1200,888,2);ctx.font='600 30px sans-serif';ctx.fillText('モノみっけ！',logo?180:96,1260);ctx.font='24px sans-serif';ctx.fillText(`${index+1} / 3`,910,1260);
  if(logo){const ratio=Math.min(64/logo.width,64/logo.height);ctx.drawImage(logo,96,1215,logo.width*ratio,logo.height*ratio);}
  return {ok:true,title,body};
 }
