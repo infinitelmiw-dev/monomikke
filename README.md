@@ -15,7 +15,7 @@
 
 GitHub Pagesで無料のHTTPSサイトとして利用できます。PC・APIキー・パッケージインストールは不要です。
 
-**[Androidだけで公開する手順](docs/ANDROID-PUBLISH.md)** を上から順に進めてください。GitHub Pagesの設定は `Deploy from a branch` → `main` → `/ (root)` です。公開するファイルは `index.html`、`style.css`、`generator.js`、`app.js` と任意の `.nojekyll`。すべて同じ階層に置きます。相対パスのため `/monomikke/` のようなサブパスでも動作します。
+**[Androidだけで公開する手順](docs/ANDROID-PUBLISH.md)** を上から順に進めてください。GitHub Pagesの設定は `Deploy from a branch` → `main` → `/ (root)` です。公開するファイルは `index.html`、`style.css`、`generator.js`、`knowledge.js`、`app.js` と任意の `.nojekyll`。すべて同じ階層に置きます。相対パスのため `/monomikke/` のようなサブパスでも動作します。
 
 Pull Requestを使えば、スマホでマージしてPagesを有効にするだけで公開できます。ZIPのダウンロードやファイルの手動アップロードは不要です。実際の公開完了は、マージとPagesの設定後に確認してください。履歴は利用者のブラウザ内に保存され、旧URLから新URLには自動移行されません。
 
@@ -58,3 +58,17 @@ npm test
 ```
 
 Node.js標準のテストランナーで全カテゴリーの生成、入力検証、Threadsの文字数上限を検証します。
+
+## 具体的な投稿を作る
+
+投稿スタイルは「豆知識・解説型」「共感・あるある型」「商品紹介型」「おすすめ・比較型」から選べます。Instagramは項目別の詳しい解説、Threadsは要点を絞った文章を生成します。生成ごとに導入や保存への誘導を切り替えます。コメント募集は付けません。商品リンク誘導には実際のHTTPS URLが必要です。
+
+内蔵テーマはフォーム内の「内蔵データで試せるテーマ」に記載しています。機種・OSが違う手順や特定商品の性能を推測で補いません。未登録テーマは「伝えたいポイント」が必要です。比較型は確認項目を示す形式で、データのない商品ランキングは生成しません。利用者の入力内容の正確性を自動検証する機能はありません。
+
+### 生成部分の構成
+
+- `knowledge.js`: カテゴリーごとの確認手順・選択基準・注意点。スマホ設定には公式情報の参照先を記載。商品データは一般的な選び方で、特定商品の仕様は含めません。
+- `generator.js`: 入力判定・スタイル・SNS別の文章構成。`generatePost(input, provider)` が非同期の拡張窓口です。providerは `generate(input)` で `{instagram, threads}` を返します。将来のAI接続ではサーバー側にキーを保持し、Pagesにはキーを置かないでください。
+- `app.js`: フォーム・保存・履歴。従来と同じlocalStorageキーを使用し、旧履歴はそのまま読み込みます。古い投稿の文章は自動で書き換えません。
+
+ビルドは不要です。Pages更新時には `knowledge.js` も必ず同じ階層に配信します。
