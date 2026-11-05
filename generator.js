@@ -17,14 +17,16 @@ function analyze(category,theme,details=''){
  return {item,needsDetails:false,prompt:item?'内蔵データを参考に下書きを作成します。伝えたいポイントは任意です。':'テーマだけでも下書きを作成できます。具体的な手順・特徴は追加確認が必要です。伝えたいポイントを入力すると優先して反映します。'};
 }
 function clean(s){return s.split(/\n|(?<=[。！？])/u).filter(line=>!/(?:コメント|返信|リプ|教えて|どう思|みんなは)/u.test(line)).join('\n').trim();}
-function localGenerate({category,theme,details='',style='explain',cta='save',productUrl='',variant}){
+function localGenerate({category,theme,details='',style='explain',cta='save',productUrl='',opening='empathy',variant}){
  theme=theme.trim();details=details.trim();
- if(!categories[category]||!styles[style]||!theme||theme.length>100||details.length>300||!['save','profile','link'].includes(cta))throw Error('入力内容を確認してください。');
+ if(!categories[category]||!styles[style]||!['empathy','question','surprise'].includes(opening)||!theme||theme.length>100||details.length>300||!['save','profile','link'].includes(cta))throw Error('入力内容を確認してください。');
  if(cta==='link'){let url;try{url=new URL(productUrl);}catch{}if(!url||url.protocol!=='https:')throw Error('商品リンクにはhttps://から始まるURLを入力してください。');productUrl=url.href;}
  const info=analyze(category,theme,details);
  const item=info.item;const supplied=clean(details);
  const fallback=category==='tips'?'対象のOS・機種を確認し、メーカーの公式ヘルプで利用条件と手順を確認しましょう。具体的な設定手順・注意点は追加確認が必要です。':'使いたい場面を整理し、販売元の商品情報で特徴・対応条件を確認しましょう。具体的な仕様・メリット・注意点は追加確認が必要です。';
  const n=variant===undefined?Math.floor(Math.random()*3):Math.abs(variant)%3;
+ const hooks={empathy:['選ぶ前に迷うこと、ありますよね。','使う直前に慌てるのは避けたいですよね。','小さな使いにくさを、少しずつ見直したい。'],question:['使う前に、何を確認しておくと安心？','自分の使い方に合うか、どこから確かめる？','見直すなら、まず何から始める？'],surprise:['使い方だけでなく、注意点にも目を向けてみよう。','便利そう、の一歩先。利用条件も確認してみよう。','選ぶときは、機能以外の確認ポイントにも注目。']};
+ const hook=hooks[opening][n];
  const leads={explain:['まず押さえたいポイント','知っておくと迷いにくいこと','使う前に確認したいこと'],relatable:['使うときに迷わないために','小さな不便を見直すヒント','準備してから気づく前に'],product:['選ぶ前に見ておきたいこと','使う場面から考えるモノ選び','気になるアイテムをチェック'],compare:['自分に合うものを選ぶ基準','比較するときはここを見る','おすすめを決める前の確認リスト']};
  const facts=supplied?`📝 伝えたいポイント\n${supplied}`:item?item.facts.map((s,i)=>`${category==='tips'?`${i+1}.`:'✓'} ${s}`).join('\n'):fallback;
  const caution=!item?'このテーマに一致する内蔵データはありません。具体的な情報は追加確認が必要です。':supplied?'入力された内容の正確性・対象条件は追加確認が必要です。':item.caution;
@@ -33,14 +35,18 @@ function localGenerate({category,theme,details='',style='explain',cta='save',pro
  const benefit=item&&!supplied?`\n\n💡 ${item.benefit}`:'';
  const extra='';
  const comparison=style==='compare'?'\n\n特定の商品を一番とは決めず、使う場面と確認できた条件を並べて選びましょう。':'';
- const instagram=`${leads[style][n]} ✨\n「${clean(theme)}」\n\n${headings[style]}\n${facts}${benefit}${extra}${comparison}\n\n⚠️ 注意点\n${caution}\n\n${action}\n\n#モノみっけ ${categories[category].tags}`;
- const threadLead={explain:['まずここを確認。','意外と見落としやすいところ。','使う前にひとつメモ。'],relatable:['準備したのに合わない…は避けたい。','小さな使いにくさ、先に確認しておきたい。','あとから気づくより、選ぶ前にメモ。'],product:['買う前に、使う場面を考えてみる。','気になるモノほど、条件を確認。','便利そう、の前にチェック。'],compare:['迷ったら、まず条件を並べてみる。','人気だけで決めずに比較したい。','自分に合うかは、使い方次第。']};
+ let instagram=`${hook} ✨\n${leads[style][n]}\n「${clean(theme)}」\n\n${headings[style]}\n${facts}${benefit}${extra}${comparison}\n\n⚠️ 注意点\n${caution}\n\n${action}\n\n#モノみっけ ${categories[category].tags}`;
+ const topicHeader=`「${clean(theme)}」`;
+ if(n===1)instagram=`${hook} ✨\n${topicHeader}\n\n⚠️ 先に確認\n${caution}\n\n${headings[style]}\n${facts}${benefit}${comparison}\n\n${action}\n\n#モノみっけ ${categories[category].tags}`;
+ if(n===2)instagram=`${hook} ✨\n${topicHeader}${benefit}\n\n${headings[style]}\n${facts}${comparison}\n\n⚠️ 注意点\n${caution}\n\n${action}\n\n#モノみっけ ${categories[category].tags}`;
  // Use one complete fact rather than cutting instructions halfway through.
  const summary=supplied||(item?item.facts[n%item.facts.length]:fallback);
  const threadAction=cta==='link'?`商品情報：${productUrl}`:cta==='profile'?'ほかの発見はプロフィールへ。':'あとで見返せるよう保存。';
  const shortCaution=!item?'具体的な情報は追加確認が必要です。':supplied?'入力内容の正確性・対象条件は追加確認が必要です。':item.caution;
- let threads=`${threadLead[style][n]}\n「${clean(theme)}」\n\n${summary}\n\n${shortCaution}\n\n${threadAction}`;
- if(Array.from(threads).length>500){const brief=supplied?Array.from(supplied).slice(0,120).join('')+'…（ポイントの一部を抜粋・全文はInstagram用へ）':summary;threads=`「${clean(theme)}」\n\n${brief}\n\n${shortCaution}\n\n${threadAction}`;}
+ let threads=`${hook}\n「${clean(theme)}」\n\n${summary}\n\n${shortCaution}\n\n${threadAction}`;
+ if(n===1)threads=`${hook}\n${topicHeader}\n\n先に確認：${shortCaution}\n\n${summary}\n\n${threadAction}`;
+ if(n===2)threads=`${hook}\n${topicHeader}\n\n${summary}\n\n${threadAction}\n\n注意：${shortCaution}`;
+ if(Array.from(threads).length>500){const brief=supplied?Array.from(supplied).slice(0,120).join('')+'…（ポイントの一部を抜粋・全文はInstagram用へ）':summary;threads=`${hook}\n「${clean(theme)}」\n\n${brief}\n\n${shortCaution}\n\n${threadAction}`;}
  if(Array.from(threads).length>500)throw Error('商品URLが長いためThreadsの500文字を超えます。短い公式URLを入力してください。');
  return {instagram,threads};
 }
