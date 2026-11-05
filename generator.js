@@ -20,7 +20,7 @@ function clean(s){return s.split(/\n|(?<=[。！？])/u).filter(line=>!/(?:コ�
 function localGenerate({category,theme,details='',style='explain',cta='save',productUrl='',opening='empathy',variant}){
  theme=theme.trim();details=details.trim();
  if(!categories[category]||!styles[style]||!['empathy','question','surprise'].includes(opening)||!theme||theme.length>100||details.length>300||!['save','profile','link'].includes(cta))throw Error('入力内容を確認してください。');
- if(cta==='link'){let url;try{url=new URL(productUrl);}catch{}if(!url||url.protocol!=='https:')throw Error('商品リンクにはhttps://から始まるURLを入力してください。');productUrl=url.href;}
+ if(cta==='link'){let url;try{url=new URL(productUrl);}catch{}if(!url||url.protocol!=='https:')throw Error('商品リンクにはhttps://から始まるURLを入力してください。');}
  const info=analyze(category,theme,details);
  const item=info.item;const supplied=clean(details);
  const fallback=category==='tips'?'対象のOS・機種を確認し、メーカーの公式ヘルプで利用条件と手順を確認しましょう。具体的な設定手順・注意点は追加確認が必要です。':'使いたい場面を整理し、販売元の商品情報で特徴・対応条件を確認しましょう。具体的な仕様・メリット・注意点は追加確認が必要です。';

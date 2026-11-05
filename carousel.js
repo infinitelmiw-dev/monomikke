@@ -26,7 +26,7 @@ function render(canvas,slide,index,design='cream',logo=null,options={}){
  const title=fit(ctx,slide.title,888,photo?180:250,photo?52:index===0?76:60,28);const body=fit(ctx,slide.body,888,photo?300:570,font,24);
  if(!title||!body)return {ok:false,error:`${index+1}枚目の文字量が多すぎます。文章を短くするか改行を減らしてください。内容は省略していません。`};
  function draw(layout,y,color){ctx.fillStyle=color;ctx.font=`600 ${layout.size}px sans-serif`;for(const line of layout.lines){ctx.fillText(line,96,y);y+=layout.size*1.55;}}
- draw(title,photo?240:300,t.ink);if(photo){const box={x:96,y:430,w:888,h:400};ctx.save();ctx.beginPath();ctx.rect(box.x,box.y,box.w,box.h);ctx.clip();const rect=Product.crop(photo,box,options.zoom,options.x,options.y,options.mode);ctx.drawImage(photo,rect.x,rect.y,rect.w,rect.h);ctx.restore();}draw(body,photo?900:590,t.ink);ctx.fillStyle=t.accent;ctx.fillRect(96,1200,888,2);ctx.font='600 30px sans-serif';ctx.fillText('モノみっけ！',logo?180:96,1260);ctx.font='24px sans-serif';ctx.fillText(`${index+1} / 3`,910,1260);
+ draw(title,photo?240:300,t.ink);if(photo){const box={x:96,y:430,w:888,h:400};ctx.save();ctx.beginPath();ctx.rect(box.x,box.y,box.w,box.h);ctx.clip();const rect=Product.crop(photo,box,options.provided?1:options.zoom,options.provided?0:options.x,options.provided?0:options.y,options.provided?'contain':options.mode);ctx.drawImage(photo,rect.x,rect.y,rect.w,rect.h);ctx.restore();}draw(body,photo?900:590,t.ink);ctx.fillStyle=t.accent;ctx.fillRect(96,1200,888,2);ctx.font='600 30px sans-serif';ctx.fillText('モノみっけ！',logo?180:96,1260);ctx.font='24px sans-serif';ctx.fillText(`${index+1} / 3`,910,1260);
  if(logo){const ratio=Math.min(64/logo.width,64/logo.height);ctx.drawImage(logo,96,1215,logo.width*ratio,logo.height*ratio);}
  return {ok:true,title,body};
 }
