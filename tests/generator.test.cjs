@@ -1,0 +1,4 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const {categories,generate}=require('../generator.js');
+for(const category of Object.keys(categories))test(`${category}: creates distinct drafts with theme and details`,()=>{const r=generate(category,'持ち歩ける充電グッズ','軽量で収納しやすい');assert.match(r.instagram,/持ち歩ける充電グッズ/);assert.match(r.threads,/持ち歩ける充電グッズ/);assert.match(r.instagram,/軽量で収納しやすい/);assert.match(r.threads,/軽量で収納しやすい/);assert.notEqual(r.instagram,r.threads);assert.ok(Array.from(r.threads).length<=500);});
+test('maximum inputs keep Threads within 500 characters',()=>{for(const c of Object.keys(categories))assert.ok(Array.from(generate(c,'あ'.repeat(100),'い'.repeat(300)).threads).length<=500);});
+test('rejects empty or invalid input',()=>{assert.throws(()=>generate('tips','  '));assert.throws(()=>generate('unknown','theme'));assert.throws(()=>generate('tips','あ'.repeat(101)));});
