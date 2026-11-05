@@ -1,42 +1,56 @@
 (function(){
 const $=id=>document.getElementById(id);let post=null,save=null,logo=null;let photos=[];let photoKinds=[];let photoNames=[];
+// Fontsource's jsDelivr CDN is preferred; Google Fonts remains a fallback.
 const cuteFonts={
- round:{family:'Zen Maru Gothic',query:'Zen+Maru+Gothic:wght@600'},
- hand:{family:'Yomogi',query:'Yomogi'},
- pop:{family:'M PLUS Rounded 1c',query:'M+PLUS+Rounded+1c:wght@600'}
+ round:{family:'Zen Maru Gothic',weight:700,urls:[
+   'https://cdn.jsdelivr.net/npm/@fontsource/zen-maru-gothic@5.2.8/700.css',
+   'https://unpkg.com/@fontsource/zen-maru-gothic@5.2.8/700.css',
+   'https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700&display=swap']},
+ hand:{family:'Yomogi',weight:400,urls:[
+   'https://unpkg.com/@fontsource/yomogi@5.2.8/400.css',
+   'https://cdn.jsdelivr.net/npm/@fontsource/yomogi@5.2.8/400.css',
+   'https://fonts.googleapis.com/css2?family=Yomogi&display=swap']},
+ pop:{family:'M PLUS Rounded 1c',weight:700,urls:[
+   'https://unpkg.com/@fontsource/m-plus-rounded-1c@5.2.8/700.css',
+   'https://cdn.jsdelivr.net/npm/@fontsource/m-plus-rounded-1c@5.2.8/700.css',
+   'https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700&display=swap']}
 };
 const loadedFonts=new Set(['standard']);
 const failedFonts=new Set();
 const fontLoadsPending=new Set();
 async function ensureFont(key){
  if(!cuteFonts[key]||loadedFonts.has(key))return true;
- const data=cuteFonts[key];
- const timeout=(promise,ms)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(Error('読み込みに時間がかかっています')),ms))]);
- let link=document.querySelector('link[data-monomikke-font="'+key+'"]');
- try{
-  if(!link){
-   link=document.createElement('link');link.rel='stylesheet';link.dataset.monomikkeFont=key;
-   link.href='https://fonts.googleapis.com/css2?family='+data.query+'&display=swap';
+ const font=cuteFonts[key];
+ const timeout=(promise,ms)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(Error('接続の時間切れ')),ms))]);
+ let lastError='通信先に接続できませんでした';
+ for(let i=0;i<font.urls.length;i++){
+  const link=document.createElement('link');link.rel='stylesheet';
+  link.dataset.monomikkeFont=key;
+  link.href=font.urls[i];
+  try{
+   $('image-font-status').textContent='文字フォントを読み込んでいます（配信元 '+(i+1)+'/'+font.urls.length+'）…';
+   const ready=new Promise((resolve,reject)=>{
+    link.addEventListener('load',resolve,{once:true});
+    link.addEventListener('error',()=>reject(Error('配信元に接続できませんでした')),{once:true});
+   });
+   document.head.append(link);
+   await timeout(ready,9000);
+   const target=font.weight+' 32px "'+font.family+'"';
+   const faces=await timeout(document.fonts.load(target,'あいうえお漢字'),13000);
+   if(!faces.length||!document.fonts.check(target,'あいうえお漢字'))throw Error('日本語のフォントデータが取得できませんでした');
+   loadedFonts.add(key);failedFonts.delete(key);
+   $('image-font-status').textContent='かわいいフォントの読み込みに成功しました。';
+   return true;
+  }catch(error){
+   lastError=error.message;
+   link.remove();
   }
-  const stylesheet=new Promise((resolve,reject)=>{
-   if(link.dataset.ready==='yes'){resolve();return;}
-   link.addEventListener('load',()=>{link.dataset.ready='yes';resolve();},{once:true});
-   link.addEventListener('error',()=>reject(Error('Google Fontsに接続できませんでした')),{once:true});
-  });
-  if(!link.isConnected)document.head.append(link);
-  await timeout(stylesheet,20000);
-  const fonts=await timeout(document.fonts.load('600 32px "'+data.family+'"','あいうえお漢字'),20000);
-  if(!fonts.length||!document.fonts.check('600 32px "'+data.family+'"','あいうえお漢字'))throw Error('文字データを取得できませんでした');
-  loadedFonts.add(key);failedFonts.delete(key);
-  return true;
- }catch(error){
-  failedFonts.add(key);
-  if(link&&link.parentNode){link.remove();}
-  $('image-font-status').textContent='選択したフォントをまだ読み込めません（'+error.message+'）。画像は一時的に標準文字で表示します。「フォントを再読み込み」から再試行できます。';
-  $('retry-image-font').hidden=false;
-  console.warn('画像フォントの読込失敗',key,error);
-  return false;
  }
+ failedFonts.add(key);
+ $('image-font-status').textContent='フォントを読み込めませんでした（'+lastError+'）。配信元を切り替えて試しましたが接続できません。選択は保存されています。「フォントを再読み込み」で再試行できます。';
+ $('retry-image-font').hidden=false;
+ console.warn('フォントの複数配信元への接続失敗',key,lastError);
+ return false;
 }
 function gallery(){const list=$('photo-gallery');list.replaceChildren();photos.forEach((photo,i)=>{const item=document.createElement('button');item.type='button';item.className='photo-thumb';const canvas=document.createElement('canvas');canvas.width=120;canvas.height=90;const scale=Math.min(120/photo.width,90/photo.height);canvas.getContext('2d').drawImage(photo,(120-photo.width*scale)/2,(90-photo.height*scale)/2,photo.width*scale,photo.height*scale);canvas.setAttribute('aria-label',photoNames[i]);const name=document.createElement('span');name.textContent=photoNames[i];item.append(canvas,name);item.onclick=()=>{if(!requirePost())return;if(!state()){notice('先に「文章から画像を作る」で画像編集を開いてください。');return;}state().slides[0].photo={index:i,zoom:1,x:0,y:0,mode:'contain'};state().photoMode=photoKinds[i];save();select(post,save);$('image-fields').scrollIntoView({behavior:'smooth',block:'start'});};list.append(item);});}
 function ensureSlides(){if(state())return;post.carousel={photoMode:$('photo-kind').value,design:$('image-design').value,source:post.texts.instagram,slides:(post.purchaseSlides&&post.texts.instagram===post.generatedPurchaseSource?post.purchaseSlides:MonomikkeCarousel.fromPost(post.product?.name||post.theme,post.texts.instagram)).map(slide=>({...slide}))};}
