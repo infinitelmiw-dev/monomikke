@@ -50,7 +50,18 @@ function renderMagazine(canvas,slide,index,logo,options){
  }else if(index===1){if(hasPhoto)photo({x:96,y:410,w:888,h:230});const cards=pointCards(slide.body),start=hasPhoto?690:460,height=hasPhoto?155:220,gap=hasPhoto?20:24;
  cards.forEach((value,i)=>{const y=start+i*(height+gap);box(80,y,920,height,['#edf1e8','#f3e7e4','#f6f0e2'][i]);label(`0${i+1}`,105,y+48,32);text(value||'未入力：確認できた魅力を追記してください。',180,y+45,780,height-50,max,24,slide.bodyAlign);});
  }else{if(hasPhoto)photo({x:96,y:410,w:888,h:240});const y=hasPhoto?710:460,h=hasPhoto?300:535;box(80,y,920,h,'#f2e8df');label('BEFORE YOU BUY',110,y+35,19);text(slide.body,110,y+85,860,h-105,max,24,slide.bodyAlign);
- box(80,1060,920,140,t.accent);label('気になったら、商品ページへ',120,1115,36,'#ffffff');label('価格・対応条件は、購入前にもうひと確認。',120,1160,25,'#f1f3e8');}
+ box(80,1060,920,140,t.accent);
+ const bannerTitle=typeof slide.ctaTitle==='string'?slide.ctaTitle:'商品の詳細はプロフィールから！';
+ const bannerSubtitle=typeof slide.ctaSubtitle==='string'?slide.ctaSubtitle:'プロフィールのリンク一覧で商品名を選んでね。';
+ function drawBannerLine(value,y,maxSize,color){
+  if(!value.trim())return;
+  let size=maxSize;ctx.font=`600 ${size}px sans-serif`;
+  while(size>19&&ctx.measureText(value).width>824){size--;ctx.font=`600 ${size}px sans-serif`;}
+  if(ctx.measureText(value).width>824){valid=false;return;}
+  label(value,120,y,size,color);
+ }
+ drawBannerLine(bannerTitle,1115,36,'#ffffff');
+ drawBannerLine(bannerSubtitle,1160,25,'#f1f3e8');}
  ctx.fillStyle='#d3dfd0';ctx.fillRect(80,1230,920,2);label('モノみっけ！',logo?175:85,1280,30);label(`${index+1} / 3`,925,1280,22);
  if(logo){const scale=Math.min(64/logo.width,64/logo.height);ctx.drawImage(logo,85,1240,logo.width*scale,logo.height*scale);}
  return valid?{ok:true}:{ok:false,error:`${index+1}枚目の文字量が多すぎます。短くするか、2枚目は空行で3つのカードに分けてください。内容は省略していません。`};
