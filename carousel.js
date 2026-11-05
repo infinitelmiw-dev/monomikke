@@ -3,7 +3,7 @@ const Product=root.MonomikkeProduct||(typeof module!=='undefined'?require('./pro
 const themes={cream:{name:'クリーム',bg:'#faf4e5',paper:'#fffdf7',accent:'#9a7647',ink:'#453c30'},pink:{name:'くすみピンク',bg:'#f1e0e2',paper:'#fff9f9',accent:'#a36878',ink:'#503d45'},sage:{name:'セージグリーン',bg:'#e3ebe0',paper:'#fafcf7',accent:'#688568',ink:'#344d3d'},magazine:{name:'大人かわいい・雑誌風',bg:'#e7ede4',paper:'#fcfaf4',accent:'#637e69',ink:'#34483c'}};
 const fontFamilies={standard:'sans-serif',round:'"Zen Maru Gothic",sans-serif',hand:'"Yomogi",sans-serif',pop:'"M PLUS Rounded 1c",sans-serif'};
 const fontStack=key=>fontFamilies[key]||fontFamilies.standard;
-const fontSpec=(size,family)=>`600 ${size}px ${family}`;
+const fontSpec=(size,family)=>`${family.includes('Yomogi')?400:family.includes('Rounded')||family.includes('Zen Maru')?700:600} ${size}px ${family}`;
 const segments=s=>typeof Intl.Segmenter==='function'?Array.from(new Intl.Segmenter('ja',{granularity:'grapheme'}).segment(s),x=>x.segment):Array.from(s);
 function fromPost(theme,text){
  const blocks=text.trim().split(/\n\s*\n/).filter(Boolean);const intro=blocks.shift()||'';
