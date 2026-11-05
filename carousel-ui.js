@@ -10,15 +10,20 @@ async function ensureFont(key){
  if(!cuteFonts[key]||loadedFonts.has(key))return true;
  const data=cuteFonts[key];
  try{
-  if(!document.querySelector('link[data-monomikke-font="'+key+'"]')){
-   const link=document.createElement('link');link.rel='stylesheet';link.dataset.monomikkeFont=key;
+  let link=document.querySelector('link[data-monomikke-font="'+key+'"]');
+  if(!link){
+   link=document.createElement('link');link.rel='stylesheet';link.dataset.monomikkeFont=key;
    link.href='https://fonts.googleapis.com/css2?family='+data.query+'&display=swap';
-   document.head.append(link);
   }
-  await Promise.race([
-   document.fonts.load('600 32px "'+data.family+'"','あいうえお漢字').then(()=>{}),
-   new Promise((_,reject)=>setTimeout(()=>reject(Error('タイムアウト')),9000))
-  ]);
+  const ready=new Promise((resolve,reject)=>{
+   if(link.dataset.ready==='yes'){resolve();return;}
+   link.addEventListener('load',()=>{link.dataset.ready='yes';resolve();},{once:true});
+   link.addEventListener('error',()=>reject(Error('書体の読み込みに失敗')),{once:true});
+  });
+  if(!link.isConnected)document.head.append(link);
+  await Promise.race([ready,new Promise((_,reject)=>setTimeout(()=>reject(Error('タイムアウト')),9000))]);
+  const fonts=await document.fonts.load('600 32px "'+data.family+'"','あいうえお漢字');
+  if(!fonts.length)throw Error('フォントデータを取得できませんでした');
   if(!document.fonts.check('600 32px "'+data.family+'"','あいうえお漢字'))throw Error('フォント未読込');
   loadedFonts.add(key);return true;
  }catch(error){
