@@ -5,7 +5,7 @@ const cuteFonts={
  hand:{family:'Yomogi',query:'Yomogi'},
  pop:{family:'M PLUS Rounded 1c',query:'M+PLUS+Rounded+1c:wght@600'}
 };
-const loadedFonts=new Set(['standard']);
+const loadedFonts=new Set(['standard']);const fontLoadsPending=new Set();
 async function ensureFont(key){
  if(!cuteFonts[key]||loadedFonts.has(key))return true;
  const data=cuteFonts[key];
@@ -40,6 +40,7 @@ function select(next,onSave){try{return renderSelection(next,onSave);}catch(erro
 function renderSelection(next,onSave){post=next;save=onSave;gallery();$('image-fields').replaceChildren();if(!requirePost())return false;
  const data=state();const renderer=globalThis.MonomikkeCarousel;const design=data?.design||$('image-design').value||'cream';const supported=!!renderer?.themes?.[design]&&typeof renderer.render==='function';const palette=renderer?.themes?.[design]||{bg:'#e3ebe0',ink:'#344d3d'};if(data?.photoMode)$('photo-kind').value=data.photoMode;$('product-photos').disabled=$('photo-kind').value==='none';$('image-bg').value=data?.bg||palette.bg;$('image-ink').value=data?.ink||palette.ink;$('image-font').value=data?.font||46;$('image-font-family').value=data?.fontFamily||'standard';if(!Array.from($('image-design').options).some(option=>option.value===design))$('image-design').add(new Option('保存済みの未対応デザイン',design));$('image-design').value=design;$('image-stale').textContent=data&&data.source!==post.texts.instagram?'元のInstagram文章が変更されています。画像にはまだ反映されていません。必要なら「文章から画像を作る」で更新してください。':'';
  if(!data){$('image-status').textContent='「文章から画像を作る」を押すと、現在のInstagram文章から3枚を作成します。';return;}
+ if(data.fontFamily&&data.fontFamily!=='standard'&&!loadedFonts.has(data.fontFamily)&&!fontLoadsPending.has(data.fontFamily)){fontLoadsPending.add(data.fontFamily);ensureFont(data.fontFamily).then(ok=>{fontLoadsPending.delete(data.fontFamily);if(ok&&post===next&&state()?.fontFamily===data.fontFamily)select(post,save);});}
  if(!Array.isArray(data.slides)||data.slides.length!==3||data.slides.some(slide=>!slide||typeof slide!=='object')){notice('保存済みの画像編集データの形式を読み取れません。元データと文章は保持しています。必要ならJSONをバックアップしてから画像を作り直してください。');return false;}
  data.slides.forEach((slide,i)=>{const card=document.createElement('section');card.className='image-card';const label=document.createElement('h3');label.textContent=`${i+1}枚目：${['表紙','解説','まとめ'][i]}`;const title=document.createElement('textarea');title.value=slide.title;title.rows=2;title.setAttribute('aria-label',`${i+1}枚目の見出し`);const body=document.createElement('textarea');body.value=slide.body;body.rows=6;body.setAttribute('aria-label',`${i+1}枚目の本文`);
  let ctaPanel=null,ctaTitleInput=null,ctaSubtitleInput=null;
