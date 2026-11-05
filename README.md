@@ -15,7 +15,7 @@
 
 GitHub Pagesで無料のHTTPSサイトとして利用できます。PC・APIキー・パッケージインストールは不要です。
 
-**[Androidだけで公開する手順](docs/ANDROID-PUBLISH.md)** を上から順に進めてください。GitHub Pagesの設定は `Deploy from a branch` → `main` → `/ (root)` です。公開するファイルは `index.html`、`style.css`、`generator.js`、`knowledge.js`、`app.js` と任意の `.nojekyll`。すべて同じ階層に置きます。相対パスのため `/monomikke/` のようなサブパスでも動作します。
+**[Androidだけで公開する手順](docs/ANDROID-PUBLISH.md)** を上から順に進めてください。GitHub Pagesの設定は `Deploy from a branch` → `main` → `/ (root)` です。公開するファイルは `index.html`、`style.css`、`generator.js`、`knowledge.js`、`topics.js`、`app.js` と任意の `.nojekyll`。すべて同じ階層に置きます。相対パスのため `/monomikke/` のようなサブパスでも動作します。
 
 Pull Requestを使えば、スマホでマージしてPagesを有効にするだけで公開できます。ZIPのダウンロードやファイルの手動アップロードは不要です。実際の公開完了は、マージとPagesの設定後に確認してください。履歴は利用者のブラウザ内に保存され、旧URLから新URLには自動移行されません。
 
@@ -72,3 +72,17 @@ Node.js標準のテストランナーで全カテゴリーの生成、入力検�
 - `app.js`: フォーム・保存・履歴。従来と同じlocalStorageキーを使用し、旧履歴はそのまま読み込みます。古い投稿の文章は自動で書き換えません。
 
 ビルドは不要です。Pages更新時には `knowledge.js` も必ず同じ階層に配信します。
+
+## 第4弾：ネタ提案・書き出し・別パターン
+
+- カテゴリーを選んで「今日の投稿ネタを探す」を押すと、内蔵の候補から3件表示。スマホ豆知識18件、他の3カテゴリー各16件を用意。最新情報の取得は行いません。
+- 候補を押すとテーマへ入力します。シャッフルした候補を順番に使い、直前の3件を次の表示から除外。カテゴリー別の表示履歴は `monomikke.topics.v1` に保存します。保存できなくても画面内の提案は利用できます。
+- 書き出しは共感型・疑問型・意外性型。意外性型は確認視点を変え、未確認の効果や流行は断定しません。
+- 「別パターンを生成」は現在のフォームを使い、両SNSをまとめて別の下書きへ生成。書き出しと、注意点・本文・誘導の配置を3通りで切り替えます。設定の操作順は変えません。元の編集済み文章や投稿ステータスは元の履歴に残します。履歴を開くと書き出し設定も復元します。旧履歴は共感型として扱い、文章は書き換えません。
+- ネタ提案は `topics.js`、書き出し・構成変更は `generator.js`。外部API・追加パッケージ・APIキーは不要です。
+
+第4弾のテストは `node --test tests/*.test.cjs` で実行できます。
+
+### GitHub Pagesの更新
+
+AndroidのChromeでこの変更のPRを開き「Merge pull request」→「Confirm merge」。Pagesが既存どおり main / (root) を配信していれば追加設定は不要です。「Actions」で pages build and deployment の成功後に公開URLを再読み込みしてください。`topics.js` も同じ階層へ配信されます。履歴を残すため、Chromeのサイトデータは削除しないでください。更新前後で同じURL・ブラウザを使用します。
