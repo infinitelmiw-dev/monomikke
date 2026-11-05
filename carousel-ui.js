@@ -3,15 +3,15 @@ const $=id=>document.getElementById(id);let post=null,save=null,logo=null;let ph
 // Fontsource's jsDelivr CDN is preferred; Google Fonts remains a fallback.
 const cuteFonts={
  round:{family:'Zen Maru Gothic',weight:700,urls:[
-   'https://cdn.jsdelivr.net/fontsource/css/zen-maru-gothic@5.2.8/700.css',
-   'https://cdnjs.cloudflare.com/ajax/libs/fontsource-zen-maru-gothic/5.2.8/700.css',
+   'https://cdn.jsdelivr.net/npm/@fontsource/zen-maru-gothic@5.2.8/700.css',
+   'https://unpkg.com/@fontsource/zen-maru-gothic@5.2.8/700.css',
    'https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700&display=swap']},
  hand:{family:'Yomogi',weight:400,urls:[
-   'https://cdn.jsdelivr.net/fontsource/css/yomogi@5.2.8/400.css',
+   'https://unpkg.com/@fontsource/yomogi@5.2.8/400.css',
    'https://cdn.jsdelivr.net/npm/@fontsource/yomogi@5.2.8/400.css',
    'https://fonts.googleapis.com/css2?family=Yomogi&display=swap']},
  pop:{family:'M PLUS Rounded 1c',weight:700,urls:[
-   'https://cdn.jsdelivr.net/fontsource/css/m-plus-rounded-1c@5.2.8/700.css',
+   'https://unpkg.com/@fontsource/m-plus-rounded-1c@5.2.8/700.css',
    'https://cdn.jsdelivr.net/npm/@fontsource/m-plus-rounded-1c@5.2.8/700.css',
    'https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700&display=swap']}
 };
