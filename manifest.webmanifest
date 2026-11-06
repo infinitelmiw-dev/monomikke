@@ -1,0 +1,26 @@
+{
+  "name": "モノみっけ！｜投稿スタジオ",
+  "short_name": "モノみっけ！",
+  "description": "スマホ・便利グッズ・推し活のSNS投稿を作るスタジオ",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff8fa",
+  "theme_color": "#f8dbe7",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
