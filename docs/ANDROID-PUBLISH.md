@@ -109,3 +109,7 @@ Chromeで公開URLを開いた状態で「︙」→「ホーム画面に追加�
 | 履歴が保存できない | 通常タブを使用し、Chromeの保存設定・端末の空き容量を確認 |
 
 GitHub公式ヘルプ：https://docs.github.com/ja/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
+
+## 共通デザインの配信ファイル
+
+カテゴリー共通デザインを含む最新コードは、PRをmainへマージして配信してください。手動アップロードでは `brand-layout.js` と `assets/fonts/` のWOFF2・ライセンスも必要です。フォルダー構造を維持します。ZIPを使う場合は `scripts/package-pages.py` がこれらも含めます。Pages設定は変更不要です。

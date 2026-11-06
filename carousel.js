@@ -1,6 +1,6 @@
 (function(root){
 const Product=root.MonomikkeProduct||(typeof module!=='undefined'?require('./product.js'):null);
-const themes={cream:{name:'クリーム',bg:'#faf4e5',paper:'#fffdf7',accent:'#9a7647',ink:'#453c30'},pink:{name:'くすみピンク',bg:'#f1e0e2',paper:'#fff9f9',accent:'#a36878',ink:'#503d45'},sage:{name:'セージグリーン',bg:'#e3ebe0',paper:'#fafcf7',accent:'#688568',ink:'#344d3d'},magazine:{name:'大人かわいい・雑誌風',bg:'#e7ede4',paper:'#fcfaf4',accent:'#637e69',ink:'#34483c'}};
+const themes={brand:{name:'モノみっけ！共通デザイン',bg:'#F9DCE8',paper:'#fffaf7',accent:'#846a76',ink:'#493D43'},cream:{name:'クリーム',bg:'#faf4e5',paper:'#fffdf7',accent:'#9a7647',ink:'#453c30'},pink:{name:'くすみピンク',bg:'#f1e0e2',paper:'#fff9f9',accent:'#a36878',ink:'#503d45'},sage:{name:'セージグリーン',bg:'#e3ebe0',paper:'#fafcf7',accent:'#688568',ink:'#344d3d'},magazine:{name:'大人かわいい・雑誌風',bg:'#e7ede4',paper:'#fcfaf4',accent:'#637e69',ink:'#34483c'}};
 const fontFamilies={standard:'sans-serif',round:'"Zen Maru Gothic",sans-serif',hand:'"Yomogi",sans-serif',pop:'"M PLUS Rounded 1c",sans-serif'};
 const fontStack=key=>fontFamilies[key]||fontFamilies.standard;
 const fontSpec=(size,family)=>`${family.includes('Yomogi')?400:family.includes('Rounded')||family.includes('Zen Maru')?700:600} ${size}px ${family}`;
@@ -23,6 +23,7 @@ function wrap(ctx,text,width){
 function fit(ctx,text,width,height,max,min,family='sans-serif'){for(let size=max;size>=min;size--){ctx.font=fontSpec(size,family);const lines=wrap(ctx,text,width);if(lines.every(x=>ctx.measureText(x).width<=width+.1)&&lines.length*size*1.55<=height)return {size,lines};}return null;}
 function alignedX(x,width,textWidth,align='left'){const spare=Math.max(0,width-textWidth);return x+(align==='center'?spare/2:align==='right'?spare:0);}
 function render(canvas,slide,index,design='cream',logo=null,options={}){
+ if(design==='brand'){const brand=root.MonomikkeBrand||(typeof module!=='undefined'?require('./brand-layout.js'):null);if(!brand)return {ok:false,error:'共通デザインのコードを再読み込みしてください。'};return brand.render(canvas,slide,index,logo,options,{wrap,alignedX,crop:Product.crop,fontStack});}
  if(design==='magazine')return renderMagazine(canvas,slide,index,logo,options);
  const t={...(themes[design]||themes.cream)};if(/^#[0-9a-f]{6}$/i.test(options.bg||'')){t.bg=options.bg;t.paper=options.bg;}if(/^#[0-9a-f]{6}$/i.test(options.ink||''))t.ink=options.ink;canvas.width=1080;canvas.height=1350;const ctx=canvas.getContext('2d');const family=fontStack(options.fontFamily);ctx.fillStyle=t.bg;ctx.fillRect(0,0,1080,1350);ctx.fillStyle=t.paper;ctx.fillRect(48,48,984,1254);
  ctx.fillStyle=t.accent;if(design==='pink'){ctx.beginPath();ctx.arc(990,65,34,0,Math.PI*2);ctx.fill();}else if(design==='sage'){ctx.fillRect(48,48,22,1254);}else{ctx.fillRect(90,185,100,7);}
