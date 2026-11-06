@@ -10,3 +10,4 @@
 @font-face{font-family:'Monomikke Round';src:url('assets/fonts/ZenMaruGothic-Bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}.image-card h3{font-family:'Monomikke Round',sans-serif}#image-character{max-width:100%;font-size:13px}#clear-character{min-height:46px}#brand-color-note{padding:8px;background:#f5f0e9;border-radius:8px}
 #image-category{display:block;width:100%;font-size:16px;min-height:46px;margin:8px 0}
 @font-face{font-family:'Zen Maru Gothic';src:url('assets/fonts/ZenMaruGothic-Bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+.cover-editor{background:#fff8f4;border:1px solid #eadfd8;border-radius:16px;padding:16px;margin:14px 0}.cover-editor input{width:100%;font-size:16px;padding:12px;border:1px solid #d9d7ce;border-radius:10px}.cover-editor textarea{font-size:16px}
