@@ -15,7 +15,7 @@
 
 GitHub Pagesで無料のHTTPSサイトとして利用できます。PC・APIキー・パッケージインストールは不要です。
 
-**[Androidだけで公開する手順](docs/ANDROID-PUBLISH.md)** を上から順に進めてください。GitHub Pagesの設定は `Deploy from a branch` → `main` → `/ (root)` です。公開するファイルは `index.html`、`style.css`、`generator.js`、`knowledge.js`、`topics.js`、`purchase.js`、`product.js`、`library-data.js`、`library-ui.js`、`carousel.js`、`image-loader.js`、`carousel-ui.js`、`app.js` と任意の `.nojekyll`。すべて同じ階層に置きます。相対パスのため `/monomikke/` のようなサブパスでも動作します。
+**[Androidだけで公開する手順](docs/ANDROID-PUBLISH.md)** を上から順に進めてください。GitHub Pagesの設定は `Deploy from a branch` → `main` → `/ (root)` です。公開するファイルは `index.html`、`style.css`、`generator.js`、`knowledge.js`、`topics.js`、`purchase.js`、`product.js`、`library-data.js`、`library-ui.js`、`carousel.js`、`brand-layout.js`、`image-loader.js`、`carousel-ui.js`、`app.js` と任意の `.nojekyll`。すべて同じ階層に置きます。相対パスのため `/monomikke/` のようなサブパスでも動作します。
 
 Pull Requestを使えば、スマホでマージしてPagesを有効にするだけで公開できます。ZIPのダウンロードやファイルの手動アップロードは不要です。実際の公開完了は、マージとPagesの設定後に確認してください。履歴は利用者のブラウザ内に保存され、旧URLから新URLには自動移行されません。
 
@@ -234,3 +234,24 @@ npm run test:images
 `node tests/browser/text-alignment.cjs` で、Anker PowerPort III Nano 20Wの投稿を使い、見出しとピンクベージュ枠の実際の左/中央/右の描画位置、写真画素の不変、ページ別保存と復元・バックアップ、PNG保存を検証できます。スマホ相当Chromiumでの検証で、Android実機は未接続です。Playwright/Chromiumは開発テスト用で、アプリに追加の依存・料金・APIキーは不要です。
 
 このブランチは、mainに未反映だった前回の履歴・画像編集停止の修正も含みます。Pages設定は従来のままです。マージ後は通常の再読み込みで使えます。サイトデータは削除しないでください。
+
+## カテゴリー共通のブランドデザイン
+
+新しい投稿の画像メーカーは「モノみっけ！共通デザイン」を初期選択します。既存のクリーム・ピンク・セージ・雑誌風デザインと、保存済みの編集内容はそのまま残ります。旧投稿にもデザイン欄で共通デザインを選択できます。
+
+| カテゴリー | 背景色 |
+| --- | --- |
+| スマホ豆知識 | `#F9DCE8` |
+| 便利グッズ | `#FFF0D6` |
+| 推し活グッズ | `#EADFFB` |
+| お知らせ | `#DDF3E8` |
+
+従来の「スマホ便利グッズ」「暮らしの便利グッズ」は別カテゴリーとして維持し、画像の背景はどちらも便利グッズ色になります。「お知らせ」を投稿カテゴリーとネタ提案に追加しました。投稿カテゴリーを選ぶと、編集中の共通デザインも自動配色します。画像メーカー内の「画像カテゴリー」でも配色を個別に選べ、設定は履歴とJSONバックアップへ保存します。共通デザインの背景色は固定で、旧デザインでは従来の背景色編集を利用できます。
+
+全ページともタイトルは上、写真またはイラストは中央、買い物袋キャラクターは左下、保存案内は右下です。写真なしでは標準イラストを表示します。楽天提供画像は全体表示・縦横比維持で、写真の外へ文字・キャラクター・案内・ロゴを配置します。
+
+「買い物袋キャラクター」に利用権限のあるPNG/JPEG/WebP（2MB以下）を選ぶと左下へ差し替えできます。「標準キャラクターに戻す」で取り外せます。画像自体は端末内・この画面だけで保持し、外部送信やGitHubへの保存はしません。再読み込み後は選び直してください。既存のロゴアップロードとは別機能です。
+
+見出しはZen Maru Gothic Boldの丸ゴシックで統一。ライセンス付きの軽量WOFF2を `assets/fonts/` に同梱し、外部のフォントAPIを使わず表示します。本文には既存のフォント選択も使用できます。左右・中央揃え、文字サイズ、3枚個別のPNG保存、商品情報・履歴・JSONバックアップを維持します。
+
+新規 `brand-layout.js` と `assets/fonts/` 一式もPagesへ配信してください。従来のmain / (root)設定は変更不要です。`node tests/browser/brand-layout.cjs` で4色の正確な画素、カテゴリー変更、フォント、キャラクター、写真保護、PNG、履歴・バックアップとスマホ表示を検証します。Android実機は未接続で、スマホ相当Chromiumで確認しています。
