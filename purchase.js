@@ -16,7 +16,7 @@ function generate(input){const p=input.product||{},name=displayName(p.name);if(!
  const instagramAction=input.cta==='profile'?'詳しくはプロフィールのリンクから見てみてね。':url?`気になったら、商品ページでもっと詳しく。\n${url}`:'商品ページのURLは追加確認が必要です。';
  const threadAction=url?`商品ページ：${url}`:instagramAction;const pr=p.ad?'PR｜商品紹介\n':'';
  const intros={empathy:['そんなときの候補に。','気になる選択肢のひとつがこちら。','自分の使い方と照らし合わせたいのがこちら。'],convenience:['毎日の使い方を考えながら選びたいのがこちら。','使いやすさを大切に選ぶなら、こんな候補も。','暮らしに取り入れる前に見ておきたい一品。'],compare:['比べる候補のひとつとして。','自分に必要な条件と照らし合わせて。','ほかの候補と並べて考えたいのがこちら。']};
- const detail=`${benefits}${price?'\n\n'+price:''}`;
+ const detail=`${benefits}${p.shipping?'\n\n送料：'+clean(p.shipping):''}${price?'\n\n'+price:''}`;
  const instagram=`${pr}${openings[mode][n]}\n\n${intros[mode][n]}\n${name}\n\n${detail}\n\nただ、ここも忘れずに。\n${caveats}\n\n${instagramAction}\n\n#モノみっけ #商品紹介`;
  const summary=facts[0]||'どんな使い方に合うかは、商品ページで追加確認を。';
  const shortOpen={empathy:[`${concernLine}…。選ぶ前に見ておきたい。`,`${concernLine}。そんなときの候補に。`,`${concernLine}…。自分に合うものを探したい。`],convenience:[`${concernLine}。使いやすさも大切に。`,`${concernLine}。いつもの使い方と合わせて選びたい。`,`${concernLine}…。選び方を少し見直したい。`],compare:[`${concernLine}。使う場面で比べてみるのもよさそう。`,`${concernLine}…。必要な条件から選びたい。`,`${concernLine}。こんな候補も並べて考えてみる。`]};
