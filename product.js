@@ -1,7 +1,7 @@
 (function(root){
 function compose(input,base){const p=input.product;if(!p?.name?.trim())return base;
  const clean=s=>(s||'').split(/\n|(?<=[。！？])/u).filter(line=>!/(?:コメント|返信|リプ|教えて|どう思|みんなは)/u.test(line)).join('\n').trim();
- const name=clean(p.name);if(!name)return base;const fields=[['確認済みの特徴',p.features],['確認済みのメリット',p.benefits],['確認時点の価格',(p.price||'')+(p.price&&p.priceDate?`（${p.priceDate}確認）`:'')],['注意点',p.caution]].filter(x=>clean(x[1])).map(([label,value])=>`${label}：${clean(value)}`);
+ const name=clean(p.name);if(!name)return base;const fields=[['確認済みの特徴',p.features],['確認済みのメリット',p.benefits],['確認時点の価格',(p.price||'')+(p.price&&p.priceDate?`（${p.priceDate}確認）`:'')],['確認済みの送料',p.shipping],['注意点',p.caution]].filter(x=>clean(x[1])).map(([label,value])=>`${label}：${clean(value)}`);
  const caution=p.caution?'価格・仕様・販売条件は投稿前に販売元で再確認してください。':'注意点・対応条件は追加確認が必要です。価格・仕様は販売元で再確認してください。';
  const link=input.productUrl?`商品情報：${input.productUrl}`:'';if(link&&new URL(input.productUrl).protocol!=='https:')throw Error('商品URLはHTTPSを指定してください。');
  const action=input.cta==='profile'?'商品のリンクはプロフィールから確認できます。':link||'あとで見返せるよう保存。';const threadAction=link||action;const heading=base.instagram.split('\n')[0];const disclosure=p.ad?'PR｜商品紹介\n':'';

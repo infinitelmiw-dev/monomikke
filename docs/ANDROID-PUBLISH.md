@@ -113,3 +113,7 @@ GitHub公式ヘルプ：https://docs.github.com/ja/pages/getting-started-with-gi
 ## 共通デザインの配信ファイル
 
 カテゴリー共通デザインを含む最新コードは、PRをmainへマージして配信してください。手動アップロードでは `brand-layout.js` と `assets/fonts/` のWOFF2・ライセンスも必要です。フォルダー構造を維持します。ZIPを使う場合は `scripts/package-pages.py` がこれらも含めます。Pages設定は変更不要です。
+
+## かんたん投稿の追加ファイル
+
+最新PRをmainへマージすると、ホームに専用欄が追加されます。手動配信時は `easy-post.js` と `easy-ui.js` も同じ階層へ置いてください。従来の画像・フォント資産も必要です。Pages設定は変更不要です。共有先で文章・画像・PR・リンクを確認し、投稿は自分で行ってください。
